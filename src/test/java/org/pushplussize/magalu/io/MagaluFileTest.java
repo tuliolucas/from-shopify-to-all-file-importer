@@ -8,6 +8,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.pushplussize.magalu.io.generate.image.MagaluImageProductTitle;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,7 +27,8 @@ import static org.pushplussize.shopify.io.ShopifyFileTest.getShopifyFile;
 @RunWith(JUnit4.class)
 public class MagaluFileTest extends TestCase {
 
-    public static final String MAGALU_FILE_NAME = "magalu-template-upload-products-skus.xlsx";
+    public static final String MAGALU_PRODUCT_FILE_NAME = "magalu-template-upload-products-skus.xlsx";
+    public static final String MAGALU_IMAGE_PRODUCT_FILE_NAME = "magalu-template-upload-images.xlsx";
 
     public static File getFile(String filename) {
         return new File(MagaluFileTest.class.getClassLoader().getResource(filename).getFile());
@@ -34,12 +36,12 @@ public class MagaluFileTest extends TestCase {
 
     @Test
     public void shouldHaveDefaultMagaluProductsHeaders() throws IOException, InvalidFormatException {
-        assertTrue(new MagaluFile(getFile(MAGALU_FILE_NAME)).isValid());
+        assertTrue(new MagaluFile(getFile(MAGALU_PRODUCT_FILE_NAME)).isValid());
     }
 
     @Test
-    public void shouldImportFromShopifyFileSuccessfully() throws IOException, InvalidFormatException {
-        MagaluFile magaluFile = new MagaluFile(getFile(MAGALU_FILE_NAME));
+    public void shouldImportProductsFromShopifyFileSuccessfully() throws IOException, InvalidFormatException {
+        MagaluFile magaluFile = new MagaluFile(getFile(MAGALU_PRODUCT_FILE_NAME));
         XSSFWorkbook xssfWorkbook = magaluFile.importToProductFile(getShopifyFile(SHOPIFY_FILE_NAME));
         XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
         assertThat(xssfWorkbook.getNumberOfSheets(), is(1));
@@ -58,24 +60,48 @@ public class MagaluFileTest extends TestCase {
         assertThat(row.getCell(COMPRIMENTO.index).getStringCellValue(), is("30"));
         assertThat(row.getCell(PESO.index).getStringCellValue(), is("1"));
         assertThat(row.getCell(PRECO.index).getStringCellValue(), is("149,90"));
+        assertThat(row.getCell(PRECO_PROMOCIONAL.index).getStringCellValue(), is("149,90"));
     }
 
     @Test
-    public void shouldCreateFileSuccessfully() throws IOException, InvalidFormatException {
-        MagaluFile magaluFile = new MagaluFile(getFile(MAGALU_FILE_NAME));
-        XSSFWorkbook xssfWorkbook = magaluFile.importToProductFile(getShopifyFile(SHOPIFY_FILE_NAME));
+    public void shouldImportFromShopifyFileSuccessfully() throws IOException, InvalidFormatException {
+        MagaluFile magaluFile = new MagaluFile(getFile(MAGALU_IMAGE_PRODUCT_FILE_NAME));
+        XSSFWorkbook xssfWorkbook = magaluFile.importToImageProductFile(getShopifyFile(SHOPIFY_FILE_NAME));
+        XSSFSheet sheet = xssfWorkbook.getSheetAt(0);
+        assertThat(xssfWorkbook.getNumberOfSheets(), is(1));
+        XSSFRow row = sheet.getRow(4);
+        assertThat(row.getCell(MagaluImageProductTitle.CODIGO_VARIACAO.index).getStringCellValue(), is("100000429"));
+        assertThat(row.getCell(MagaluImageProductTitle.URL_IMAGEM_1.index).getStringCellValue(), is("https://cdn.shopify.com/s/files/1/0292/6598/5595/products/4_c48f78a8-b328-4187-9283-636b1543fa48.png?v=1611939987"));
+    }
 
-        String fileName = getFileName();
+    @Test
+    public void shouldCreateImageProductFileSuccessfully() throws IOException, InvalidFormatException {
+        MagaluFile magaluFile = new MagaluFile(getFile(MAGALU_IMAGE_PRODUCT_FILE_NAME));
+        XSSFWorkbook xssfWorkbook = magaluFile.importToImageProductFile(getShopifyFile(SHOPIFY_FILE_NAME));
+
+        String fileName = getFileName("magaluImageProducts_");
 
         File file = new File(fileName);
         FileOutputStream outputStream = new FileOutputStream(file);
         xssfWorkbook.write(outputStream);
     }
 
-    private String getFileName() {
+    @Test
+    public void shouldCreateProductFileSuccessfully() throws IOException, InvalidFormatException {
+        MagaluFile magaluFile = new MagaluFile(getFile(MAGALU_PRODUCT_FILE_NAME));
+        XSSFWorkbook xssfWorkbook = magaluFile.importToProductFile(getShopifyFile(SHOPIFY_FILE_NAME));
+
+        String fileName = getFileName("magaluProducts_");
+
+        File file = new File(fileName);
+        FileOutputStream outputStream = new FileOutputStream(file);
+        xssfWorkbook.write(outputStream);
+    }
+
+    private String getFileName(String magaluProducts_) {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String fileName = "/Users/thoughtworks/Documents/Pessoal/personal-projects/from-shopify-importer/src/test/resources/" +
-                "magaluProducts_"
+                magaluProducts_
                 +dateFormat.format(new Date())
                 +".xlsx";
         return fileName;

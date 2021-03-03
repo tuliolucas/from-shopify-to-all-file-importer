@@ -1,6 +1,7 @@
 package org.pushplussize.magalu.io.generate.type.product;
 
 import org.pushplussize.magalu.io.FromTo;
+import org.pushplussize.magalu.io.generate.image.MagaluImageProductTitle;
 import org.pushplussize.magalu.io.generate.type.ImporterType;
 
 import java.util.HashMap;
@@ -26,25 +27,26 @@ public class MagaluProductsImporter implements ImporterType {
         fromToMap.put(ORIGEM, new FromTo("0"));
         fromToMap.put(GARANTIA, new FromTo("1"));
         fromToMap.put(ID_CATEGORIA, new FromTo(TYPE, TYPE_CATEGORY));
-        fromToMap.put(ALTURA, new FromTo("10"));
-        fromToMap.put(LARGURA, new FromTo("22"));
-        fromToMap.put(COMPRIMENTO, new FromTo("30"));
-        fromToMap.put(PESO, new FromTo("1"));
+        fromToMap.put(ALTURA, new FromTo("10,0"));
+        fromToMap.put(LARGURA, new FromTo("22,0"));
+        fromToMap.put(COMPRIMENTO, new FromTo("30,0"));
+        fromToMap.put(PESO, new FromTo("1,0"));
         fromToMap.put(PRECO, new FromTo(VARIANT_PRICE, MONEY));
+        fromToMap.put(PRECO_PROMOCIONAL, new FromTo(VARIANT_PRICE, MONEY));
     }
 
     @Override
-    public FromTo getConfigByFrom(MagaluProductTitle magaluProductTitle) {
-        return fromToMap.get(magaluProductTitle);
+    public FromTo getConfigByFrom(Enum magaluHeaderTitleEnum) {
+        return fromToMap.get(magaluHeaderTitleEnum);
     }
 
     @Override
     public String getMagaluTitleDescription(Integer indexInRow) {
-        return null;
+        return MagaluProductTitle.getMagaluTitleDescription(indexInRow);
     }
 
     @Override
-    public MagaluProductTitle getMagaluTitle(Integer indexInRow) {
-        return null;
+    public Enum getMagaluTitle(Integer indexInRow) {
+        return MagaluProductTitle.getMagaluTitle(indexInRow);
     }
 }

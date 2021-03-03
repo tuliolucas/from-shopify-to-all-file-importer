@@ -74,7 +74,7 @@ public class FromTo {
                 break;
 
             case HTML: {
-                shopifyValue = Jsoup.parse(shopifyValue).text();
+                shopifyValue = Jsoup.parse(shopifyValue).text().replace(";", ".\n");
                 break;
             }
             case HARDCODED: shopifyValue = getValue();
@@ -83,7 +83,7 @@ public class FromTo {
             case TYPE_CATEGORY: shopifyValue = getMagaluType(shopifyValue);
                 break;
 
-            case TEXT_WITH_REPLACE: shopifyValue = shopifyValue.replace(getValue(), "");;
+            case TEXT_WITH_REPLACE: shopifyValue = shopifyValue.replace(getValue(), "");
                 break;
         }
         return shopifyValue;

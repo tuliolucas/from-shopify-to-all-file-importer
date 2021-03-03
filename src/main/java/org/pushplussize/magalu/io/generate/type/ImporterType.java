@@ -1,11 +1,10 @@
 package org.pushplussize.magalu.io.generate.type;
 
 import org.pushplussize.magalu.io.FromTo;
-import org.pushplussize.magalu.io.generate.type.product.MagaluProductTitle;
 
 public interface ImporterType {
-    FromTo getConfigByFrom(MagaluProductTitle magaluProductTitle);
+    FromTo getConfigByFrom(Enum magaluHeaderTitleEnum);
     String getMagaluTitleDescription(Integer indexInRow);
-    MagaluProductTitle getMagaluTitle(Integer indexInRow);
+    Enum getMagaluTitle(Integer indexInRow);
 
 }
